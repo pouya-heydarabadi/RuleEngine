@@ -87,9 +87,7 @@ ELSE
 
 #### **3. Deploy n8n**  
 - Use Docker or install n8n locally:
-  ```bash
-  docker run -it --rm     -p 5678:5678     -v ~/.n8n:/home/node/.n8n     n8nio/n8n
-  ```
+- 
 - Create a **Webhook Trigger** in n8n to listen for order requests.  
 - Use **HTTP Request Nodes** to fetch customer and product scores.  
 - Implement the workflow to compare scores and respond back to the **.NET API**.
