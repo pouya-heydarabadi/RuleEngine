@@ -21,6 +21,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleEngine.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleEngine.UI", "Src\UI\RuleEngine.UI\RuleEngine.UI.csproj", "{BF4C132F-9BEB-4D48-9C23-6D176136EBFF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dockers", "Dockers", "{12C63890-E630-47ED-B13E-EDD2F7026BF6}"
+	ProjectSection(SolutionItems) = preProject
+		D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\.env = D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\.env
+		D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\docker-compose.yml = D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\docker-compose.yml
+		D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\init-data.sh = D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\init-data.sh
+		D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\README.md = D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
