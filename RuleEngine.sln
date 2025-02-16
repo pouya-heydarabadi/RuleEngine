@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleEngine.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleEngine.UI", "Src\UI\RuleEngine.UI\RuleEngine.UI.csproj", "{BF4C132F-9BEB-4D48-9C23-6D176136EBFF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dockers", "Dockers", "{12C63890-E630-47ED-B13E-EDD2F7026BF6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dockers", "Dockers", "{80DE30AB-272C-4C22-88B9-66E07CA5192A}"
 	ProjectSection(SolutionItems) = preProject
 		D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\.env = D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\.env
 		D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\docker-compose.yml = D:\DevOps\List\n8n\n8n-hosting\docker-compose\withPostgresAndWorker\docker-compose.yml
@@ -46,6 +46,7 @@ Global
 		{41F72FA6-AEA3-4DF5-B7A6-459529EEDB6F} = {A9F7D51A-F21F-42C9-95B2-DAF9CA71D0E1}
 		{EA199417-66A0-4E8A-AC09-36597B01C077} = {41F72FA6-AEA3-4DF5-B7A6-459529EEDB6F}
 		{BF4C132F-9BEB-4D48-9C23-6D176136EBFF} = {C33B310E-8312-41B2-8906-507C50B52BF9}
+		{80DE30AB-272C-4C22-88B9-66E07CA5192A} = {7395157E-E9EC-41BF-B355-F54EFC0AB599}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{17F74723-153D-48D0-A2EE-056B1EF6C8E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
