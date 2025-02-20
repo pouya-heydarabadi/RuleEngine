@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using RestSharp;
 using RuleEngine.Domain.Orders;
@@ -17,6 +18,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.MaxDepth = 5;
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.SerializerOptions.IgnoreNullValues = true;
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 builder.Services.AddOpenApi();
