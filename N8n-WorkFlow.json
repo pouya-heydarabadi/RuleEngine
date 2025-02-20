@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -180,
-        180
+        -80,
+        160
       ],
       "id": "77be25d3-2fea-417a-9933-b0ab495142cb",
       "name": "Webhook",
@@ -25,8 +25,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        60,
-        -100
+        160,
+        -120
       ],
       "id": "e8aa5627-1442-47b6-a9dd-57f9530ed339",
       "name": "Get Product"
@@ -39,7 +39,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        280,
+        360,
         180
       ],
       "id": "2ab2f920-b880-4530-ba5c-591fc5783014",
@@ -72,8 +72,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        520,
-        180
+        580,
+        -40
       ],
       "id": "651b2eba-6c8e-4475-b013-8dc8520839a9",
       "name": "Check For Bonus"
@@ -106,8 +106,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        740,
-        280
+        780,
+        240
       ],
       "id": "37fb92d3-3812-44b8-8beb-c313b8f56862",
       "name": "Check For Verified User"
@@ -121,8 +121,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1120,
-        180
+        1740,
+        420
       ],
       "id": "8d4e0db8-f583-4b6f-a407-0d039796ee8b",
       "name": "Ok"
@@ -136,8 +136,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1020,
-        500
+        1120,
+        380
       ],
       "id": "ae1be130-26ff-4053-9912-74edc01eb47d",
       "name": "Error For User Not Verify"
@@ -151,11 +151,81 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        780,
-        -40
+        880,
+        -60
       ],
       "id": "3ae0c3ab-ecff-4a4e-b274-1c221d8ac511",
       "name": "Error For User Bouns Balance"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "Select sum(quantity) from orderitems oi \ninner join orders od on oi.OrderId = od.Id\ninner join Products pd on oi.ProductId = pd.Id\n  \nwhere od.UserId = {{ $('Get User').item.json.id }}\nand pd.Id= {{ $('Get Product').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        140
+      ],
+      "id": "0bf41a19-dcb5-42ad-9560-a5735471ac38",
+      "name": "Fetch Data For Limit Buy For Product",
+      "executeOnce": false,
+      "notesInFlow": false,
+      "credentials": {
+        "microsoftSql": {
+          "id": "K2UuntIqh8BYSwBn",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4327a493-4e09-4f22-b45e-389bd57370e1",
+              "leftValue": "={{ $('Get Product').item.json.limit + $('Webhook').item.json.body.quantity }}",
+              "rightValue": "={{ $json[''] }}",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        260
+      ],
+      "id": "207f035e-49a5-4cae-91ae-5aeb7460fc3e",
+      "name": "Check For Limit "
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Response\": \"You have exceeded the sales limit, and therefore, this product will not be allocated to you.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1720,
+        40
+      ],
+      "id": "f453e940-6381-4dcd-8097-0d5acb8adfbb",
+      "name": "Respond to Webhook"
     }
   ],
   "connections": {
@@ -214,7 +284,7 @@
       "main": [
         [
           {
-            "node": "Ok",
+            "node": "Fetch Data For Limit Buy For Product",
             "type": "main",
             "index": 0
           }
@@ -222,6 +292,35 @@
         [
           {
             "node": "Error For User Not Verify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Data For Limit Buy For Product": {
+      "main": [
+        [
+          {
+            "node": "Check For Limit ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check For Limit ": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ok",
             "type": "main",
             "index": 0
           }
