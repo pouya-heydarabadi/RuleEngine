@@ -1,112 +1,3 @@
-
-# Online Order Rule Engine with n8n  
-
-![image](https://github.com/user-attachments/assets/68fc3eae-8939-430c-96bb-074ed0f422f7)
-
-
-## 🚀 Overview  
-This project is an **online ordering system** that uses **.NET Core Web API** and **SQL Server**, with **n8n** acting as the **Rule Engine**. The Rule Engine evaluates customer and product eligibility based on their scores, approving or rejecting orders based on whether they meet the criteria.
-
-## 🔧 Architecture  
-1. **.NET Core Web API**  
-   - Manages incoming order requests and provides endpoints to fetch customer and product data.
-2. **SQL Server**  
-   - Stores customer and product scores.
-3. **n8n Rule Engine**  
-   - Validates whether an order should be approved or rejected based on the scores retrieved from the API.
-
-## ⚙️ How It Works  
-1. A customer places an order via the **.NET Core API**.  
-2. The order is sent to **n8n** for rule evaluation.  
-3. **n8n** fetches:  
-   - **Customer Score** from the API endpoint:  
-     ```http
-     GET /users/{id}
-     ```  
-   - **Product Score** from the API endpoint:  
-     ```http
-     GET /product/{id}
-     ```  
-4. **n8n** compares both scores:  
-   - **If the customer score is greater than or equal to the product score threshold → Order Approved**  
-   - **If the scores don’t match → Order Rejected**  
-5. The decision is sent back to the **.NET API**, which updates the order status in **SQL Server**.
-
----
-
-## 🔄 n8n Workflow Implementation  
-
-1. **Trigger the Workflow**:  
-   - A **Webhook Node** receives the order details from the .NET API.
-2. **Fetch Customer & Product Scores**:  
-   - Use **HTTP Request Nodes** to call `/users/{id}` to retrieve `customer_score`.  
-   - Use **HTTP Request Nodes** to call `/product/{id}` to retrieve `product_score_threshold`.
-3. **Decision Making**:  
-   - The **IF Node** compares `customer_score` with `product_score_threshold`.  
-   - If the customer score meets the threshold, the order is approved; if not, it is rejected.
-4. **Respond to Webhook**:  
-   - **If approved** → Update the order status to "Confirmed" in the **.NET API**.  
-   - **If rejected** → Update the order status to "Rejected" in the **.NET API**.  
-
----
-
-## ⚖️ Example Rule Logic  
-
-```python
-IF customer_score >= product_score_threshold THEN
-    Approve order
-ELSE
-    Reject order
-```
-
----
-
-## 🛠️ Technology Stack  
-- **Backend:** .NET Core Web API  
-- **Database:** SQL Server  
-- **Rule Engine:** n8n  
-- **Workflow Automation:** n8n Nodes (Webhook, HTTP Request, IF Condition)  
-
----
-
-## 📝 Setup Instructions
-
-#### **1. Docker Configuration for n8n**  
-- The Docker configurations for n8n are located in the `docker` folder.
-- Set up necessary environment variables and volume mappings in the configuration files.
-- Use the following command to start the setup:
-  ```bash
-  docker-compose up -d
-  ```
-  This will bring up n8n with all the required configurations.
-
-#### **2. Setup .NET Core API**  
-- Clone the repository and configure the **SQL Server connection string**.  
-- Run database migrations to create tables for customers, products, and orders.  
-- Make sure the following endpoints are set up in the API:
-  - `GET /users/{id}` → Returns customer score.  
-  - `GET /product/{id}` → Returns product score threshold.  
-  - `PATCH /orders/{id}` → Updates the order status.
-
-#### **3. Deploy n8n**  
-- Use Docker or install n8n locally:
-- 
-- Create a **Webhook Trigger** in n8n to listen for order requests.  
-- Use **HTTP Request Nodes** to fetch customer and product scores.  
-- Implement the workflow to compare scores and respond back to the **.NET API**.
-
-#### **4. Test the Integration**  
-- Place an order via the **.NET Core API**.  
-- Verify the order status in **SQL Server**.  
-- Monitor n8n executions to confirm that the rule engine is functioning as expected.
-
----
-
-## 🔧 WorkFlow Example for n8n  
-
-Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run it:
-
-```json
 {
   "nodes": [
     {
@@ -119,8 +10,8 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -180,
-        180
+        -80,
+        160
       ],
       "id": "77be25d3-2fea-417a-9933-b0ab495142cb",
       "name": "Webhook",
@@ -134,8 +25,8 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        60,
-        -100
+        160,
+        -120
       ],
       "id": "e8aa5627-1442-47b6-a9dd-57f9530ed339",
       "name": "Get Product"
@@ -148,7 +39,7 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        280,
+        360,
         180
       ],
       "id": "2ab2f920-b880-4530-ba5c-591fc5783014",
@@ -181,8 +72,8 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        520,
-        180
+        580,
+        -40
       ],
       "id": "651b2eba-6c8e-4475-b013-8dc8520839a9",
       "name": "Check For Bonus"
@@ -215,8 +106,8 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        740,
-        280
+        780,
+        240
       ],
       "id": "37fb92d3-3812-44b8-8beb-c313b8f56862",
       "name": "Check For Verified User"
@@ -230,8 +121,8 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1120,
-        180
+        1740,
+        420
       ],
       "id": "8d4e0db8-f583-4b6f-a407-0d039796ee8b",
       "name": "Ok"
@@ -245,8 +136,8 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1020,
-        500
+        1120,
+        380
       ],
       "id": "ae1be130-26ff-4053-9912-74edc01eb47d",
       "name": "Error For User Not Verify"
@@ -260,11 +151,81 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        780,
-        -40
+        880,
+        -60
       ],
       "id": "3ae0c3ab-ecff-4a4e-b274-1c221d8ac511",
       "name": "Error For User Bouns Balance"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "Select sum(quantity) from orderitems oi \ninner join orders od on oi.OrderId = od.Id\ninner join Products pd on oi.ProductId = pd.Id\n  \nwhere od.UserId = {{ $('Get User').item.json.id }}\nand pd.Id= {{ $('Get Product').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        140
+      ],
+      "id": "0bf41a19-dcb5-42ad-9560-a5735471ac38",
+      "name": "Fetch Data For Limit Buy For Product",
+      "executeOnce": false,
+      "notesInFlow": false,
+      "credentials": {
+        "microsoftSql": {
+          "id": "K2UuntIqh8BYSwBn",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4327a493-4e09-4f22-b45e-389bd57370e1",
+              "leftValue": "={{ $('Get Product').item.json.limit + $('Webhook').item.json.body.quantity }}",
+              "rightValue": "={{ $json[''] }}",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        260
+      ],
+      "id": "207f035e-49a5-4cae-91ae-5aeb7460fc3e",
+      "name": "Check For Limit "
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Response\": \"You have exceeded the sales limit, and therefore, this product will not be allocated to you.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1720,
+        40
+      ],
+      "id": "f453e940-6381-4dcd-8097-0d5acb8adfbb",
+      "name": "Respond to Webhook"
     }
   ],
   "connections": {
@@ -323,7 +284,7 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "main": [
         [
           {
-            "node": "Ok",
+            "node": "Fetch Data For Limit Buy For Product",
             "type": "main",
             "index": 0
           }
@@ -336,15 +297,36 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
           }
         ]
       ]
+    },
+    "Fetch Data For Limit Buy For Product": {
+      "main": [
+        [
+          {
+            "node": "Check For Limit ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check For Limit ": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "pinData": {}
 }
-```
-
----
-
-## 🚀 Future Enhancements  
-- **Implement Caching**: Reduce API calls for improved performance.  
-- **Dynamic Pricing & Fraud Detection**: Add more complex rules to improve the decision-making process.  
-- **Real-Time Order Processing**: Integrate a messaging system like **RabbitMQ** or **Kafka** for real-time updates.
