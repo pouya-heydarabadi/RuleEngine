@@ -10,7 +10,14 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://192.168.242.11:5000");
+builder.WebHost.UseUrls("http://192.168.11.18:5000");
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.MaxDepth = 5;
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.SerializerOptions.IgnoreNullValues = true;
+});
 
 builder.Services.AddOpenApi();
 
@@ -86,7 +93,6 @@ app.MapDelete("/products/{id}", async (int id, AppDbContext db) =>
     return Results.NoContent();
 });
 #endregion
-
 
 #region Users
 
@@ -258,9 +264,8 @@ app.MapPost("/orders/{orderId}/items", async (int orderId, OrderItemDto newItem,
 });
 
 #endregion
+
 app.Run();
-
-
 
 public class ProductDto
 {
