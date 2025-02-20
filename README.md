@@ -1,6 +1,9 @@
 
 # Online Order Rule Engine with n8n  
 
+![Uploading image.png…]()
+
+
 ## 🚀 Overview  
 This project is an **online ordering system** that uses **.NET Core Web API** and **SQL Server**, with **n8n** acting as the **Rule Engine**. The Rule Engine evaluates customer and product eligibility based on their scores, approving or rejecting orders based on whether they meet the criteria.
 
