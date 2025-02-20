@@ -9,6 +9,7 @@ public class Product
     public int StockQuantity { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public decimal LimitBonus { get; set; } = 0;
+    public int Limit { get; set; } = 0;
 
     // سازنده پیش‌فرض
     public Product() { }
@@ -46,5 +47,10 @@ public class Product
     public void IncreaseStock(int quantity)
     {
         StockQuantity += quantity;
+    }
+
+    public void ApplyLimit(int quantity)
+    {
+        Limit = quantity;
     }
 }
