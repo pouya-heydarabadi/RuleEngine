@@ -166,22 +166,8 @@ app.MapPost("/orders", async (OrderDto orderDto, AppDbContext db) =>
 {
     var user = await db.Users.FindAsync(orderDto.UserId);
     if (user is null) return Results.BadRequest("User not found");
-
-    var items = new List<OrderItem>();
-
-    foreach (var itemDto in orderDto.Items)
-    {
-        var product = await db.Products.FindAsync(itemDto.ProductId);
-        if (product is null) return Results.BadRequest($"Product {itemDto.ProductId} not found");
-        if (product.StockQuantity < itemDto.Quantity) return Results.BadRequest($"Insufficient stock for product {product.Name}");
-
-        var orderItem = new OrderItem(itemDto.ProductId, product.Name, product.Price, itemDto.Quantity, null);
-        items.Add(orderItem);
-
-        product.ReduceStock(itemDto.Quantity); // کاهش موجودی
-    }
-
-    var order = new Order(0, user, items);
+    
+    var order = new Order(0, user, null);
     db.Orders.Add(order);
     await db.SaveChangesAsync();
     return Results.Created($"/orders/{order.Id}", order);
