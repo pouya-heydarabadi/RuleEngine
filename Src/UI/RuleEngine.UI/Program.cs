@@ -240,9 +240,9 @@ app.MapPost("/orders/{orderId}/items", async (int orderId, OrderItemDto newItem,
     {
         ResponseDto responseContent = JsonSerializer.Deserialize<ResponseDto>(response.Content); 
         if (responseContent.Response.ToLower() != "ok")
-        {
             return Results.BadRequest(responseContent.Response);
-        }
+        else if (responseContent.Response.ToLower() == "Error in workflow".ToLower())
+            return Results.BadRequest(responseContent.Response);
     }
     #endregion
     
