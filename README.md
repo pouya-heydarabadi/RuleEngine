@@ -105,7 +105,6 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
 
 ```json
 {
-  "name": "Order Rule Engine Workflow",
   "nodes": [
     {
       "parameters": {
@@ -116,60 +115,41 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [-180, 180],
+      "position": [
+        -180,
+        180
+      ],
       "id": "77be25d3-2fea-417a-9933-b0ab495142cb",
       "name": "Webhook",
       "webhookId": "cab59b31-26f8-493a-b68f-a08fcd5db279"
     },
     {
       "parameters": {
-        "url": "=http://192.168.242.11:5000/products/{{$json.body.productId}}",
+        "url": "=http://192.168.11.18:5000/products/{{$json.body.productId}}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [60, -100],
+      "position": [
+        60,
+        -100
+      ],
       "id": "e8aa5627-1442-47b6-a9dd-57f9530ed339",
       "name": "Get Product"
     },
     {
       "parameters": {
-        "url": "=http://192.168.242.11:5000/users/{{$('Webhook').item.json.body.userId}}",
+        "url": "=http://192.168.11.18:5000/users/{{$('Webhook').item.json.body.userId}}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [280, 180],
+      "position": [
+        280,
+        180
+      ],
       "id": "2ab2f920-b880-4530-ba5c-591fc5783014",
       "name": "Get User"
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "{
-  "Response": "You Do Not Have Enough Bonus To Buy This Product"
-}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
-      "position": [760, -20],
-      "id": "3ae0c3ab-ecff-4a4e-b274-1c221d8ac511",
-      "name": "Respond to Webhook"
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "{
-  "Response": "Order Confirmed"
-}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
-      "position": [760, 280],
-      "id": "8d4e0db8-f583-4b6f-a407-0d039796ee8b",
-      "name": "Respond to Webhook1"
     },
     {
       "parameters": {
@@ -197,12 +177,93 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [520, 180],
+      "position": [
+        520,
+        180
+      ],
       "id": "651b2eba-6c8e-4475-b013-8dc8520839a9",
       "name": "Check For Bonus"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "85d7d2c5-7c95-4faf-b30f-ff42a3358366",
+              "leftValue": "={{ $json.verified }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        280
+      ],
+      "id": "37fb92d3-3812-44b8-8beb-c313b8f56862",
+      "name": "Check For Verified User"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Response\": \"Ok\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        180
+      ],
+      "id": "8d4e0db8-f583-4b6f-a407-0d039796ee8b",
+      "name": "Ok"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Response\": \"To purchase from our business, the user must be verified.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1020,
+        500
+      ],
+      "id": "ae1be130-26ff-4053-9912-74edc01eb47d",
+      "name": "Error For User Not Verify"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Response\": \"You Have Does Not Enought Of Bonus For Buy This Product\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        780,
+        -40
+      ],
+      "id": "3ae0c3ab-ecff-4a4e-b274-1c221d8ac511",
+      "name": "Error For User Bouns Balance"
     }
   ],
-  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -241,14 +302,32 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Error For User Bouns Balance",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Respond to Webhook1",
+            "node": "Check For Verified User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check For Verified User": {
+      "main": [
+        [
+          {
+            "node": "Ok",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error For User Not Verify",
             "type": "main",
             "index": 0
           }
@@ -256,16 +335,7 @@ Here's the **JSON** file for the n8n workflow. Copy and paste it into n8n to run
       ]
     }
   },
-  "active": true,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "24a16f1a-6b64-44f1-beae-3e61914eca5a",
-  "meta": {
-    "instanceId": "fa5e312e1050cfb971f8686fa55892a63a467a26bf4aab8dd9a797fe181ab15b"
-  },
-  "id": "OkNfSrWs9XD2Mtyv",
-  "tags": []
+  "pinData": {}
 }
 ```
 
